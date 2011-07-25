@@ -10,6 +10,7 @@ gem 'mysql2', '~> 0.2.6'
 # Testing framework RSpec
 group :development do
       gem 'rspec-rails', '2.0.1'
+      gem 'annotate', '2.4.0'
 end
 
 group :test do
