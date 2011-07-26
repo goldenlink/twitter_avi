@@ -16,6 +16,8 @@ describe "Users" do
           click_button
           response.should render_template('users/new')
           response.should have_selector('div#error_explanation')
+          field_labeled("password").value.should be_nil
+          field_labeled("confirmation").value.should be_nil
         end.should_not change(User, :count)
       end
       
