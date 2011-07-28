@@ -74,6 +74,29 @@ describe "LayoutLinks" do
                                     :content => "Profile")
     end
 
+    describe "user is not admin" do
+
+      it "should not have a delete link" do
+        visit users_path
+        response.should_not have_selector("a", :href => user_path(@user),
+                                          :content => "delete")
+      end
+    end
+
+    describe "user is admin" do
+      
+      before(:each) do
+        @user.toggle!(:admin)
+      end
+
+      it "should have a delete link" do
+        visit users_path
+        response.should have_selector("a", :href => user_path(@user),
+                                      :content => "delete")
+      end
+
+    end
+
   end
 
 

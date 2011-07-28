@@ -85,6 +85,20 @@ describe UsersController do
       response.should have_selector("input[name='user[password_confirmation]'][type='password']")
     end
 
+    describe "signed in user" do
+      
+      before(:each) do
+        @user = Factory(:user)
+        test_sign_in(@user)
+      end
+
+      it "should be redirected to root url" do
+        get :new 
+        response.should redirect_to(root_path)
+      end
+
+    end
+
   end
 
   describe "GET 'show'" do
@@ -164,7 +178,7 @@ describe UsersController do
         end.should_not change(User, :count)
       end
 
-      it "should have the rigth title" do
+      it "should have the right title" do
         post :create, :user => @attr
         response.should have_selector("title", :content => "Sign up")
       end
@@ -173,6 +187,22 @@ describe UsersController do
         post :create, :user => @attr
         response.should render_template('new')
       end
+    end
+
+    describe "signed in user" do
+      
+      before(:each) do
+        @user = Factory(:user)
+        test_sign_in(@user)
+        @attr = { :name =>  "New User", :email => "user1@example.com", 
+          :password => "foobar", :password_confirmation => "foobar" }
+      end
+
+      it "should redirect to root path" do
+        post :create, :user => @attr
+        response.should redirect_to(root_path)
+      end
+
     end
   end
 
