@@ -154,7 +154,20 @@ describe User do
       @user.should be_admin
     end
   end
+
+  describe "micropost associations" do
+
+    before(:each) do
+      @user = User.create(@attr)
+    end
+
+    it "should have a microposts attribute" do
+      @user.should respond_to(:microposts)
+    end
+      
+  end
 end
+
 
 
 
@@ -169,5 +182,6 @@ end
 #  updated_at         :datetime
 #  encrypted_password :string(255)
 #  salt               :string(255)
+#  admin              :boolean(1)      default(FALSE)
 #
 
