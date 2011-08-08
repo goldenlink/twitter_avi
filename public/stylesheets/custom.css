@@ -240,10 +240,15 @@ div.user_name span.microposts {
 }
 
 form.new_micropost {
-    margin-bottom: 2em;
+    margin-bottom: 0em;
 }
 
 form.new_micropost textarea {
     height: 4em;
     margin-bottom: 0;
 }
+
+.char_left{
+    font-style: italic;
+}
+
