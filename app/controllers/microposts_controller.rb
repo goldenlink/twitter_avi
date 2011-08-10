@@ -19,6 +19,11 @@ class MicropostsController < ApplicationController
     redirect_back_or root_path
   end
 
+  def index
+    @title = "All microposts"
+    @microposts = Micropost.find_all_by_user_id(params[:user_id])
+  end
+
 private
   
   def authorize_user

@@ -3,16 +3,52 @@ require 'spec_helper'
 describe "Microposts" do
   
   before(:each) do
-    user = Factory(:user)
+    @user = Factory(:user)
     content = "Lorem ipsum dolor sit amet"
     @create_post = proc {
       fill_in :micropost_content, :with => content
       click_button
     }
     visit signin_path
-    fill_in :email, :with => user.email
-    fill_in :password, :with => user.password
+    fill_in :email, :with => @user.email
+    fill_in :password, :with => @user.password
     click_button
+  end
+
+  describe "delete link" do
+    before(:each) do
+      visit root_path
+      @create_post.call()
+    end
+
+    describe "authorized user" do
+      before(:each) do
+        visit user_path(@user)
+      end
+      
+      it "should have a delete link" do
+        response.should have_selector("div.delete")
+      end
+    end
+
+    describe "unauthorized user" do
+
+      before(:each) do
+        visit signout_path
+        @wrong_user = Factory(:user, :email => "wrong@example.com")
+        visit signin_path
+        fill_in :email, :with => @wrong_user.email
+        fill_in :password, :with => @wrong_user.password
+        click_button
+      end
+
+      it "should not have a delete link" do
+        visit user_path(@user)
+        response.should_not have_selector("div.delete")
+      end
+
+    end
+
   end
 
   describe "count microposts" do
@@ -37,7 +73,6 @@ describe "Microposts" do
       end
 
     end
-
 
   describe "micropost pagination" do
 
