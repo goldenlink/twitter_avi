@@ -243,6 +243,7 @@ form.new_micropost {
     margin-bottom: 0em;
 }
 
+
 form.new_micropost textarea {
     height: 4em;
     margin-bottom: 0;
@@ -252,3 +253,38 @@ form.new_micropost textarea {
     font-style: italic;
 }
 
+/* List micropost showing */
+
+ul.microposts {
+    margin-top: 1em; 
+    margin-left: 0;
+    padding-left: 0;
+}
+
+
+li.micropost:nth-child(even){
+    background-color: #E9ECF9;
+}
+
+ul.microposts li.micropost{
+    list-style: none;
+    display: list-item;
+    border-top: 1px solid #ccc;
+}    
+
+
+ul.microposts li.micropost span.content{
+    padding-right: 8em;
+}
+
+ul.microposts li.micropost span.timestamp{
+    font-size: 85%;
+    color: #666;
+    display: block;
+}
+
+ul.microposts li.micropost div.delete{
+    float: right;
+    right: auto;
+    top: -4em;
+}

@@ -4,6 +4,11 @@ describe "Microposts" do
   
   before(:each) do
     user = Factory(:user)
+    content = "Lorem ipsum dolor sit amet"
+    @create_post = proc {
+      fill_in :micropost_content, :with => content
+      click_button
+    }
     visit signin_path
     fill_in :email, :with => user.email
     fill_in :password, :with => user.password
@@ -18,24 +23,41 @@ describe "Microposts" do
       end
     
       it "should have 1 micropost" do
-        content = "Lorem ipsum dolor sit amet"
         visit root_path
-        fill_in :micropost_content, :with => content
-        click_button
+        @create_post.call()
         response.should have_selector("span.microposts", :content => "1 micropost")
       end
     
       it "should have 2 microposts" do
-        content = "Lorem ipsum dolor sit amet"
         visit root_path
         2.times do
-          fill_in :micropost_content, :with => content
-          click_button
+          @create_post.call()
         end
         response.should have_selector("span.microposts", :content => "2 microposts")
       end
 
     end
+
+
+  describe "micropost pagination" do
+
+    before(:each) do
+      visit root_path
+      35.times do
+        @create_post.call()
+      end
+    end
+
+    it "should have a previous link not activated" do
+      response.should have_selector("div.pagination")
+      response.should have_selector("span.disabled", :content => "Previous")
+      response.should have_selector("a", :href => "/?page=2", :content => "2")
+      response.should have_selector("a", :href => "/?page=2", :content => "Next")
+    end
+
+  end
+      
+
 
   describe "creation" do
     
