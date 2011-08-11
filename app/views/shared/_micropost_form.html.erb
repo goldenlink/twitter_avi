@@ -1,7 +1,7 @@
 <%= form_for @micropost do |f| %>
 <%= render 'shared/error_messages', :object => f.object %>
 <div class="field">
-  <%= f.text_area :content, :onkeyup => "count_char_left($F(micropost_content))" %>
+  <%= f.text_area :content, :onkeypress => "count_char_left($F(micropost_content))" %>
 </div>
 <div class="actions">
   <%= f.submit "Submit" %>
@@ -15,6 +15,6 @@
 <%= javascript_tag do %>
 function count_char_left(answer){	
 		    var count = 140 - answer.length;
-		    document.getElementById("count").innerHTML = count;
+		    $("count").update(count);
 		    }
 <% end %>
