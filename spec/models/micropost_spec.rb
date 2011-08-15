@@ -14,7 +14,7 @@ describe Micropost do
   describe "reply association" do
     before(:each) do
       @micropost = @user.microposts.create(@attr)
-      @reply = @user.microposts.create(:content => "Reply to", :in_reply_to => @micropost)
+      @reply = @user.microposts.create(:content => "Reply to", :in_reply_to_id => @micropost)
     end
 
     it "should respond to in_reply_to" do

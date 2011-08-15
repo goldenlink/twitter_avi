@@ -1,6 +1,6 @@
 class Micropost < ActiveRecord::Base
 
-  attr_accessible :content, :in_reply_to
+  attr_accessible :content, :in_reply_to_id
   
 # User association : The post is redacted by the user.
   belongs_to :user
@@ -17,6 +17,17 @@ class Micropost < ActiveRecord::Base
 
   #return microposts from the users being followed by the given user.
   scope :from_users_followed_by, lambda { |user| followed_by(user) }
+
+  # Format the author of the post:
+  # @-id-name
+  def author
+    ['@',self.user.id, self.user.name].join('-')
+  end
+
+  # Is the micropost a reply?
+  def reply?
+    self.in_reply_to_id.nil?
+  end
 
   private
 
@@ -43,4 +54,3 @@ end
 #  updated_at     :datetime
 #  in_reply_to_id :integer(4)
 #
-
