@@ -1,3 +1,11 @@
-$("follow_form").update("<%= escape_javascript(render('users/unfollow')) %>")
+jQuery(function($) {
+    $("#follow_form")
+	.bind('ajax:complete', function() {
+	    $("#follow_form").replaceWith("<%= escape_javascript(render('users/unfollow')) %>")
+	    $("#followers").replaceWith('<%= "#{@user.followers.count} followers" %>');
+	});
+});
 
-$("followers").update('<%= "#{@user.followers.count} followers" %>')
+// Prototype version - working fine :)
+//$("follow_form").update("<%= escape_javascript(render('users/unfollow')) %>")
+//$("followers").update('<%= "#{@user.followers.count} followers" %>')

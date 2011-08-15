@@ -1,3 +1,11 @@
-$("follow_form").update("<%= escape_javascript(render('users/follow')) %>")
+jQuery(function($) {
+    $("#follow_form")
+	.bind('ajax:complete', function() {
+	    $("#follow_form").replaceWith("<%= escape_javascript(render('users/follow')) %>")
+	    $("#followers").replaceWith('<%= "#{@user.followers.count} followers" %>');
+	});
+});
 
-$("followers").update('<%= "#{@user.followers.count} followers" %>')
+// Prototype version - works fine :)
+//$("follow_form").update("<%= escape_javascript(render('users/follow')) %>")
+//$("followers").update('<%= "#{@user.followers.count} followers" %>')
