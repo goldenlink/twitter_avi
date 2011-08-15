@@ -2,8 +2,12 @@ class Micropost < ActiveRecord::Base
 
   attr_accessible :content, :in_reply_to
   
+# User association : The post is redacted by the user.
   belongs_to :user
-  has_many :replies, :class_name => "Micropost", :foreign_key => "in_reply_to_id"
+
+# Reply to micropost.
+  has_many :replies, :class_name => "Micropost", :foreign_key => "in_reply_to_id", 
+  :dependent => :destroy
   belongs_to :in_reply_to, :class_name => "Micropost"
 
   validates :content, :presence => true, :length => { :maximum => 140 }

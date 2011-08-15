@@ -34,7 +34,7 @@ describe Micropost do
     end
 
     it "should delete replies" do
-      @micropost.delete
+      @micropost.destroy
       Micropost.find_by_id(@reply).should be_nil
     end
 
