@@ -3,7 +3,8 @@ class Micropost < ActiveRecord::Base
   attr_accessible :content
   
   belongs_to :user
-  
+  has_many :replies, :class_name => "Micropost"
+  belongs_to :in_reply_to, :class_name => "Micropost"
 
   validates :content, :presence => true, :length => { :maximum => 140 }
   validates :user_id, :presence => true

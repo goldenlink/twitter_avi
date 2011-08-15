@@ -19,6 +19,11 @@ describe Micropost do
     it "should respond to in_reply_to" do
       @micropost.should respond_to(:in_reply_to)
     end
+
+    it "should respond to replies" do
+      @micropost.should respond_to(:replies)
+    end
+
   end
 
   describe "user association" do
