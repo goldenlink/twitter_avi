@@ -1,9 +1,9 @@
 class Micropost < ActiveRecord::Base
 
-  attr_accessible :content
+  attr_accessible :content, :in_reply_to
   
   belongs_to :user
-  has_many :replies, :class_name => "Micropost"
+  has_many :replies, :class_name => "Micropost", :foreign_key => "in_reply_to_id"
   belongs_to :in_reply_to, :class_name => "Micropost"
 
   validates :content, :presence => true, :length => { :maximum => 140 }
@@ -27,15 +27,16 @@ class Micropost < ActiveRecord::Base
 end
 
 
+
 # == Schema Information
 #
 # Table name: microposts
 #
-#  id          :integer(4)      not null, primary key
-#  content     :string(255)
-#  user_id     :integer(4)
-#  created_at  :datetime
-#  updated_at  :datetime
-#  in_reply_to :integer(4)
+#  id             :integer(4)      not null, primary key
+#  content        :string(255)
+#  user_id        :integer(4)
+#  created_at     :datetime
+#  updated_at     :datetime
+#  in_reply_to_id :integer(4)
 #
 
