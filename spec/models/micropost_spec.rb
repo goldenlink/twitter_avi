@@ -11,6 +11,16 @@ describe Micropost do
     @user.microposts.create!(@attr)
   end
 
+  describe "reply association" do
+    before(:each) do
+      @micropost = @user.microposts.create(@attr)
+    end
+
+    it "should respond to in_reply_to" do
+      @micropost.should respond_to(:in_reply_to)
+    end
+  end
+
   describe "user association" do
     
     before(:each) do
@@ -44,14 +54,16 @@ describe Micropost do
 
 end
 
+
 # == Schema Information
 #
 # Table name: microposts
 #
-#  id         :integer(4)      not null, primary key
-#  content    :string(255)
-#  user_id    :integer(4)
-#  created_at :datetime
-#  updated_at :datetime
+#  id          :integer(4)      not null, primary key
+#  content     :string(255)
+#  user_id     :integer(4)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  in_reply_to :integer(4)
 #
 
