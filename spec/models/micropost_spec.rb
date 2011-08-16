@@ -12,9 +12,10 @@ describe Micropost do
   end
 
   describe "reply association" do
+
     before(:each) do
       @micropost = @user.microposts.create(@attr)
-      @reply = @user.microposts.create(:content => "Reply to", :in_reply_to_id => @micropost)
+      @reply = @user.microposts.create(:content => "Reply to", :in_reply_to_id => @micropost.id)
     end
 
     it "should respond to in_reply_to" do
@@ -36,6 +37,30 @@ describe Micropost do
     it "should delete replies" do
       @micropost.destroy
       Micropost.find_by_id(@reply).should be_nil
+    end
+
+    it "should have a is_reply? method" do
+      @micropost.should respond_to(:is_reply?)
+    end
+
+    it "should determine that it is not a reply" do
+      @micropost.should_not be_is_reply
+    end
+
+    it "should determine that it is a reply" do
+      @reply.should be_is_reply
+    end
+
+    describe "micropost author" do
+      
+      it "should respond to author" do
+        @micropost.should respond_to(:author)
+      end
+
+      it "should have the correct format" do
+        @micropost.author.should =~ /^@[-]\d*[-]\w/
+      end
+
     end
 
   end

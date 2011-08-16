@@ -29,17 +29,49 @@ render_views
       
       before(:each) do
         @user = test_sign_in(Factory(:user))
-        other_user = Factory(:user, :email => Factory.next(:email))
-        other_user.follow!(@user)
+        @other_user = Factory(:user, :email => Factory.next(:email))
       end
 
-      it "should have the right follower/following counts" do
-        get :home
-        response.should have_selector("a", :href => following_user_path(@user),
-                                      :content => "0 following")
-        response.should have_selector("a", :href => followers_user_path(@user),
-                                      :content => "1 follower")
+      describe "statistics" do
+        
+        before(:each) do
+          @other_user.follow!(@user)
+        end
+
+        it "should have the right follower/following counts" do
+          get :home
+          response.should have_selector("a", :href => following_user_path(@user),
+                                        :content => "0 following")
+          response.should have_selector("a", :href => followers_user_path(@user),
+                                        :content => "1 follower")
+        end
       end
+
+      describe "feeds item" do
+      
+        before(:each) do
+          @feed = @user.microposts.create!(:content => "Test feed")
+        end
+
+        it "should have a feed" do
+          get :home
+          response.should have_selector("span.content", :content => @feed.content)
+        end
+
+        describe "replies" do
+          before(:each) do
+            @other_user.follow!(@user)
+            @reply = @other_user.microposts.create!(:content => "Reply", :in_reply_to_id => @feed.id)
+          end
+
+          it "should have a reply" do
+            get :home
+            response.should have_selector("span.content", :content => @reply.content)
+            response.should have_selector("span.user", :content => "@-"+@user.id.to_s+"-"+@user.name)
+          end
+        end
+      end
+
     end
   end
 

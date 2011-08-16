@@ -48,7 +48,7 @@ end
 def make_replies
   users = User.all
   user = users.first
-  Micropost.all(:limit => 50).each do |post|
-    user.microposts.create!(:content => Faker::Lorem.sentence(5),:in_reply_to => post)
+  Micropost.find_all_by_user_id(users[2]).each do |post|
+    user.microposts.create!(:content => Faker::Lorem.sentence(5),:in_reply_to_id => post.id)
   end
 end

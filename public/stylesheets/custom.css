@@ -204,14 +204,20 @@ table.microposts tr {
     height: 70px;
 }
 
-table.microposts tr td.gravatar {
+table.microposts tr td {
     border-top: 1px solid #ccc;
+}
+
+table.microposts tr.reply {
+    margin-left: 30px;
+}
+
+table.microposts tr td.gravatar {
     vertical-align: top;
     width: 50px;
 }
 
 table.microposts tr td.micropost {
-    border-top: 1px solid #ccc;
     vertical-align: top;
     padding-top: 10px;
 }
@@ -288,3 +294,4 @@ ul.microposts li.micropost div.delete{
     right: auto;
     top: -4em;
 }
+

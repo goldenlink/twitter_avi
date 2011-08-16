@@ -17,6 +17,8 @@ class Micropost < ActiveRecord::Base
 
   #return microposts from the users being followed by the given user.
   scope :from_users_followed_by, lambda { |user| followed_by(user) }
+  # Including replies of the microposts
+  scope :including_replies, includes(:replies)
 
   # Format the author of the post:
   # @-id-name
@@ -25,8 +27,8 @@ class Micropost < ActiveRecord::Base
   end
 
   # Is the micropost a reply?
-  def reply?
-    self.in_reply_to_id.nil?
+  def is_reply?
+    !self.in_reply_to_id.nil?
   end
 
   private
@@ -35,8 +37,8 @@ class Micropost < ActiveRecord::Base
   # we include the user's own id as well
   def self.followed_by(user)
     followed_ids = %(SELECT followed_id FROM relationships WHERE follower_id = :user_id)
-
-    where("user_id IN (#{followed_ids}) OR user_id = :user_id", { :user_id => user })
+    # Added table reference to avoid unambiguous SQL request
+    where("microposts.user_id IN (#{followed_ids}) OR microposts.user_id = :user_id", { :user_id => user })
   end
 
 end
