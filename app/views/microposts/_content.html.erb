@@ -1,0 +1,16 @@
+
+  <div class="micropost">
+
+    <% if post.in_reply_to.present? %>
+    <span class="user">
+      <%= link_to post.in_reply_to.author, post.in_reply_to.user %>
+    </span>
+    <% end %>
+
+    <span class="content"><%= wrap(post.content) %></span>
+
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(post.created_at) %> ago.
+    </span>
+  </div>
+ 

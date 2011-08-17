@@ -1,34 +1,17 @@
 
-<tr>
-  <td class="gravatar">
+<li class="micropost">
+
+
+  <div class="gravatar">
     <%= link_to gravatar_for(feed_item.user), feed_item.user %>
-  </td>
+  </div>
 
-  <td class="micropost">
+ <%= render :partial => 'microposts/delete', :locals => { :post => feed_item } %>
 
-    <% if feed_item.in_reply_to.present? %>
-    <span class="user">
-      <%= link_to feed_item.in_reply_to.author, feed_item.in_reply_to.user %>
-    </span>
-    <% end %>
+ <%= render :partial => 'microposts/content', :locals => { :post =>  feed_item } %>
 
-    <span class="content"><%= wrap(feed_item.content) %></span>
-    <span class="timestamp">
-      Posted <%= time_ago_in_words(feed_item.created_at) %> ago.
-    </span>
-  </td>
+</li>
+<li>
+<%= render :partial => 'microposts/reply_form', :locals => {:micropost => feed_item} %>
+</li>
 
-  <td>
-  <% if current_user?(feed_item.user) %>
-    <%= link_to "delete", feed_item, :method => :delete,
-    :confirm => "You sure?", :title => feed_item.content %>
-  <% end %>
-  </td>
-
-</tr>
-
-  <% if feed_item.replies.any? %>
-  <%= render :partial => 'shared/feed_item', :collection => feed_item.replies %>
-  <% end %>
-
-</tr>

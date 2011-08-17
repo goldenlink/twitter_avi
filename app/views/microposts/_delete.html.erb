@@ -1,0 +1,6 @@
+<div class="delete">
+  <% if current_user?(post.user) %>
+  <%= link_to "delete", post, :method => :delete,
+    :confirm => "You sure?", :title => post.content %>
+  <% end %>
+</div>

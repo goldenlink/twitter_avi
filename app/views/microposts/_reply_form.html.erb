@@ -1,0 +1,9 @@
+<% form_for micropost.replies.build(:in_reply_to_id => micropost) do |f| %>
+<div class="field">
+  <%= f.hidden_field :in_reply_to_id %>
+  <%= f.text_area :content %>
+</div>
+<div class="action">
+  <%= f.submit "Reply" %>
+</div>
+<% end %>
