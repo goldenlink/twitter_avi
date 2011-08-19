@@ -1,5 +1,5 @@
 
-  <div class="micropost">
+  <div class="micropost" border="solid blue 1px">
 
     <% if post.in_reply_to.present? %>
     <span class="user">
@@ -12,5 +12,11 @@
     <span class="timestamp">
       Posted <%= time_ago_in_words(post.created_at) %> ago.
     </span>
+
+    <a class="reply_link" href="#" id="reply_<%= post.id %>">@reply</a>
   </div>
  
+<li class="reply_form" id='reply_to_<%= post.id %>'>
+  <%= render :partial => 'microposts/reply_form', :locals => {:micropost => post} %>
+</li>
+

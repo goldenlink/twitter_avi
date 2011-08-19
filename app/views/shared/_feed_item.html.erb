@@ -9,10 +9,6 @@
  <%= render :partial => 'microposts/delete', :locals => { :post => feed_item } %>
 
  <%= render :partial => 'microposts/content', :locals => { :post =>  feed_item } %>
- 
- <%= link_to_function "@reply", "my_dialog()" %>
 
 </li>
-<li>
-<%= render :partial => 'microposts/reply_form', :locals => {:micropost => feed_item} %>
-</li>
+

@@ -13,12 +13,12 @@ class Micropost < ActiveRecord::Base
   validates :content, :presence => true, :length => { :maximum => 140 }
   validates :user_id, :presence => true
 
-  default_scope :order => 'microposts.created_at DESC'
+  default_scope :order => 'microposts.created_at DESC', :conditions => { :in_reply_to_id => nil }
 
   #return microposts from the users being followed by the given user.
   scope :from_users_followed_by, lambda { |user| followed_by(user) }
   # Including replies of the microposts
-  scope :including_replies, includes(:replies)
+  scope :including_replies, includes({ :replies => [ :user, { :in_reply_to => :user } ] })
 
   # Format the author of the post:
   # @-id-name

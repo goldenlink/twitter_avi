@@ -7,3 +7,18 @@
   <%= f.submit "Reply" %>
 </div>
 <% end %>
+
+
+<!-- Javascript to show hide the reply form -->
+<!-- Refactoring needed to have less script included -->
+<%= javascript_tag do %>
+
+$(document).ready(function() {
+  $('#reply_to_<%= micropost.id %>').hide();
+
+  $('#reply_<%= micropost.id %>').click(function(){
+    $('#reply_to_<%= micropost.id %>').toggle();
+  });
+});
+
+<% end %>

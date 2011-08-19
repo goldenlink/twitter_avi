@@ -239,19 +239,23 @@ li.micropost:nth-child(even){
     background-color: #E9ECF9;
 }
 
-ul.microposts li.micropost{
+ul.microposts li{
     list-style: none;
-    display: inline-block; 
-    border-top: 1px solid #ccc;
     width: 100%;
     padding-top: 4px;
     padding-bottom: 4px;
+}
+
+ul.microposts li.micropost{
+    display: inline-block; 
+    border-top: 1px solid #ccc;
+    padding-right: 4px;
 }    
 
 ul.microposts li.micropost div.micropost{
     display: block;
     float: top;
-    padding-right: 5em;
+//    padding-right: 5em;
 }
 
 ul.microposts li.micropost div.gravatar{
@@ -260,16 +264,32 @@ ul.microposts li.micropost div.gravatar{
     padding-right: 5px;
 }
 
-ul.microposts li.micropost span.timestamp{
-    font-size: 85%;
-    color: #666;
+ul.microposts li.micropost span.content{
     display: block;
 }
 
-ul.microposts li.micropost div.delete{
+
+ul.microposts li.micropost span.timestamp{
+    font-size: 85%;
+    color: #666;
     display: inline;
+
+}
+
+ul.microposts li.micropost div.delete{
+//    display: inline;
     float: right;
     right: auto;
     top: -4em,;
 }
 
+/* Reply form */
+
+ul.microposts li.reply_form{
+    display: none;
+    margin-left: 50px;
+}
+
+ul.microposts li a.reply_link{
+    float: right;
+}
