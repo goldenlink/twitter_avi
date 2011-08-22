@@ -1,7 +1,7 @@
 
   <div class="micropost" border="solid blue 1px">
 
-    <% if post.in_reply_to.present? %>
+    <% if post.is_reply? %>
     <span class="user">
       <%= link_to post.in_reply_to.author, post.in_reply_to.user %>
     </span>
@@ -13,10 +13,7 @@
       Posted <%= time_ago_in_words(post.created_at) %> ago.
     </span>
 
-    <a class="reply_link" href="#" id="reply_<%= post.id %>">@reply</a>
+    <%= link_to "@reply", root_path(:parent_id => post) %>
   </div>
  
-<li class="reply_form" id='reply_to_<%= post.id %>'>
-  <%= render :partial => 'microposts/reply_form', :locals => {:micropost => post} %>
-</li>
 

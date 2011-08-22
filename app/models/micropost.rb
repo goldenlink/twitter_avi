@@ -1,24 +1,28 @@
 class Micropost < ActiveRecord::Base
 
-  attr_accessible :content, :in_reply_to_id
-  
+  attr_accessible :content, :parent_id
+
+#######################################
+## MODEL
+#######################################
 # User association : The post is redacted by the user.
   belongs_to :user
 
 # Reply to micropost.
-  has_many :replies, :class_name => "Micropost", :foreign_key => "in_reply_to_id", 
-  :dependent => :destroy
-  belongs_to :in_reply_to, :class_name => "Micropost"
+  has_ancestry :orphan_strategy => :rootify
 
+########################################
+## MODEL VALIDATION
+########################################
   validates :content, :presence => true, :length => { :maximum => 140 }
   validates :user_id, :presence => true
 
-  default_scope :order => 'microposts.created_at DESC', :conditions => { :in_reply_to_id => nil }
-
+########################################
+## SCOPE
+########################################
+  default_scope :order => 'microposts.created_at DESC'
   #return microposts from the users being followed by the given user.
   scope :from_users_followed_by, lambda { |user| followed_by(user) }
-  # Including replies of the microposts
-  scope :including_replies, includes({ :replies => [ :user, { :in_reply_to => :user } ] })
 
   # Format the author of the post:
   # @-id-name
@@ -28,7 +32,12 @@ class Micropost < ActiveRecord::Base
 
   # Is the micropost a reply?
   def is_reply?
-    !self.in_reply_to_id.nil?
+    !self.is_root?
+  end
+
+  # Returns the micropost it replies to.
+  def in_reply_to 
+    self.parent
   end
 
   private

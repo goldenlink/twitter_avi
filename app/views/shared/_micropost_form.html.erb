@@ -1,6 +1,9 @@
-<%= form_for @micropost do |f| %>
+<%= form_for current_user.microposts.build(:parent_id => params[:parent_id]) do |f| %>
+
 <%= render 'shared/error_messages', :object => f.object %>
+
 <div class="field">
+  <%= f.hidden_field :parent_id %>
   <%= f.text_area :content %>
 </div>
 <div class="actions">
@@ -12,6 +15,7 @@
 <span id="count">140</span> character left.
 </div>
 
+<!-- TO BE REFACTORED -->
 <%= javascript_tag do %>
 
 $("#micropost_content").keypress(function(){
