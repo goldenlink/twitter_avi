@@ -61,13 +61,15 @@ render_views
         describe "replies" do
           before(:each) do
             @other_user.follow!(@user)
-            @reply = @other_user.microposts.create!(:content => "Reply", :in_reply_to_id => @feed.id)
+            @reply = @other_user.microposts.create!(:content => "Reply", :parent_id => @feed.id)
           end
 
           it "should have a reply" do
             get :home
             response.should have_selector("span.content", :content => @reply.content)
-            response.should have_selector("span.user", :content => "@-"+@user.id.to_s+"-"+@user.name)
+            response.should have_selector("span.user") do |data|
+              data.should contain(/@-\d+-\w/)
+            end
           end
         end
       end

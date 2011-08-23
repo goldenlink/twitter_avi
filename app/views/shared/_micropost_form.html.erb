@@ -1,29 +1,38 @@
-<%= form_for current_user.microposts.build(:parent_id => params[:parent_id]) do |f| %>
+<%= form_for @micropost do |f| %>
 
 <%= render 'shared/error_messages', :object => f.object %>
 
 <div class="field">
-  <%= f.hidden_field :parent_id %>
+  <%= f.hidden_field :parent_id, { :value => params[:parent_id] } %>
   <%= f.text_area :content %>
 </div>
 <div class="actions">
   <%= f.submit "Submit" %>
 </div>
-<% end %>
 
 <div class="char_left">
-<span id="count">140</span> character left.
+140 characters left.
 </div>
+<% end %>
 
-<!-- TO BE REFACTORED -->
+<!-- Javascript to update the characters left in micropost content
+May have to be refactored later. Seems not correct to have Javascript here. 
+I think it should be in application.js -->
 <%= javascript_tag do %>
 
-$("#micropost_content").keypress(function(){
-		    var value = 140 - $(this).val().length;
-		    $("#count").text(value);
-		    }).keypress();
-$("#micropost_content").keyup(function(){
-                    $("#micropost_content").keypress();
-		    }).keyup();
+$(document).ready(function(){
+
+  $("#micropost_content").bind('keypress keydown keyup',function(){
+    
+    var count = 140 - $(this).val().length;
+    if (count > 1) {
+      $(".char_left").text(count.toString() + " characters left."); 
+    }
+    else {
+      $(".char_left").text(count.toString() + " character left."); 
+    }
+   });
+});
+
 
 <% end %>

@@ -153,4 +153,41 @@ describe "Microposts" do
     end
   end
 
+  describe "in reply to" do
+    before(:each) do
+      # Create the post for user
+      @other_user = Factory(:user, :email => Factory.next(:email))
+      @other_post = @other_user.microposts.create!(:content => "main test", :parent_id => @post)
+      # Follow user
+      @user.follow!(@other_user)
+      visit root_path
+    end
+
+    it "should have a reply link" do
+      response.should have_selector("a", :content => "@reply")
+      response.should have_selector("span.content", :content => @other_post.content)
+    end
+
+    describe "reply to" do
+      before(:each) do
+        click_link "@reply"
+      end        
+      
+      it "should redirect on root page" do
+        response.should render_template "pages/home"
+      end
+      
+      it "should create a reply" do
+        fill_in :micropost_content, :with => "Reply to main"
+        click_button
+        response.should be_successful
+        response.should have_selector("span.content", :content => "Reply to main")
+        response.should have_selector("span.user") do |data| 
+          data.should contain(/@-\d+-\w/)
+        end
+      end
+
+    end
+  end
+      
 end

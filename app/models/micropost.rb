@@ -27,7 +27,7 @@ class Micropost < ActiveRecord::Base
   # Format the author of the post:
   # @-id-name
   def author
-    ['@',self.user.id, self.user.name].join('-')
+    ['@',self.user.id, self.user.name.split().join].join('-')
   end
 
   # Is the micropost a reply?
@@ -38,6 +38,10 @@ class Micropost < ActiveRecord::Base
   # Returns the micropost it replies to.
   def in_reply_to 
     self.parent
+  end
+
+  def replies
+    self.descendants
   end
 
   private

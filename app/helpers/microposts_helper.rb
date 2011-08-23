@@ -13,4 +13,7 @@ module MicropostsHelper
       text.scan(regex).join(zero_width_space)
   end
 
+  
+
+
 end

@@ -4,7 +4,7 @@ describe Micropost do
 
   before(:each) do
     @user = Factory(:user)
-    @attr = { :content => "value for content" }
+    @attr = { :content => "value for content", :parent_id => nil }
   end
 
   it "should create a new instance given valid attributes" do
@@ -15,7 +15,7 @@ describe Micropost do
 
     before(:each) do
       @micropost = @user.microposts.create(@attr)
-      @reply = @user.microposts.create(:content => "Reply to", :in_reply_to_id => @micropost.id)
+      @reply = @user.microposts.create(@attr.merge({ :content => "Reply to", :parent_id => @micropost }))
     end
 
     it "should respond to in_reply_to" do
@@ -34,9 +34,11 @@ describe Micropost do
       @reply.in_reply_to.should == @micropost
     end
 
-    it "should delete replies" do
+    it "should rootify replies" do
       @micropost.destroy
-      Micropost.find_by_id(@reply).should be_nil
+      reply_tmp = Micropost.find_by_id(@reply)
+      reply_tmp.should_not be_nil
+      reply_tmp.should be_is_root
     end
 
     it "should have a is_reply? method" do
