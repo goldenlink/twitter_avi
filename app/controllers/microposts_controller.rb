@@ -6,6 +6,7 @@ class MicropostsController < ApplicationController
   def create
     @micropost = current_user.microposts.build(params[:micropost])
     if @micropost.save
+      notify_user(@micropost)
       flash[:success] = "Micropost created!"
       redirect_to root_path
     else
@@ -29,6 +30,13 @@ private
   def authorize_user
     @micropost = Micropost.find(params[:id])
     redirect_to root_path unless current_user?(@micropost.user)
+  end
+
+  def notify_user(micropost)
+    if !micropost.is_root?
+      @reply_to = Micropost.find_by_id(micropost.parent_id).user
+      PostMailer.notify(@reply_to, micropost.content).deliver
+    end
   end
 
 end

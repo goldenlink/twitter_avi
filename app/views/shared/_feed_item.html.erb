@@ -1,6 +1,6 @@
 
 <li class="micropost">
-
+ 
   <div class="gravatar">
     <%= link_to gravatar_for(feed_item.user), feed_item.user %>
   </div>
@@ -12,5 +12,4 @@
  <%= render :partial => 'shared/feed_item', :collection => feed_item.replies %>
 
 </li>
-
 

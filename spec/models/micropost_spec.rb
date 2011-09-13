@@ -102,15 +102,16 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: microposts
 #
-#  id             :integer(4)      not null, primary key
-#  content        :string(255)
-#  user_id        :integer(4)
-#  created_at     :datetime
-#  updated_at     :datetime
-#  in_reply_to_id :integer(4)
+#  id         :integer(4)      not null, primary key
+#  content    :string(255)
+#  user_id    :integer(4)
+#  created_at :datetime
+#  updated_at :datetime
+#  ancestry   :string(255)
 #
 

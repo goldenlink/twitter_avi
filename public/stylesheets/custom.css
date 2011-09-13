@@ -250,13 +250,18 @@ ul.microposts li.micropost{
     display: inline-block; 
     border-top: 1px solid #ccc;
     padding-right: 4px;
-}    
+}
+ 
+.item{
+    margin-left: 150px;
+}
 
 ul.microposts li.micropost div.micropost{
     display: block;
     float: top;
 //    padding-right: 5em;
 }
+
 
 ul.microposts li.micropost div.gravatar{
     display: inline-block;
@@ -282,6 +287,8 @@ ul.microposts li.micropost div.delete{
     right: auto;
     top: -4em,;
 }
+
+
 
 /* Reply form */
 
