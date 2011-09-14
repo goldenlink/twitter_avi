@@ -39,7 +39,6 @@ describe PostMailer do
   describe "Reply notification" do
     before(:each) do
       @post = @user.microposts.create(:content => "My post")
-      @reply = @user.microposts.create(:content => "My reply", :parent_id => @post)
     end
 
     it "should not raise an error" do
@@ -51,17 +50,41 @@ describe PostMailer do
         @notify = PostMailer.notify(@user, @post)
       end
 
-      it "should have the user name" do
-        @notify.body.should have_selector("h1",:content => "Welcome " + @user.name)
+      it "should be a multipart message" do
+        @notify.body.parts.length.should == 2
+        @notify.body.parts.collect(&:content_type).should == [ "text/plain; charset=UTF-8","text/html; charset=UTF-8"]
       end
-      it "should show the reply's author name" do
-        @notify.body.should have_selector("#answer_from", :content => @post.user.name)
+
+      describe "html part" do
+
+        before(:each) do
+          @content = @notify.body.parts.find {|p| p.content_type.match /html/}.body
+        end
+        it "should have the user name" do
+          @content.should have_selector("h1",:content => "Welcome " + @user.name)
+        end
+        it "should show the reply's author name" do
+          @content.should have_selector("#answer_from", :content => @post.user.name)
+        end
+        it "should contain the reply's text in the mail" do
+          @content.should have_selector("p",:content => @post.content)
+        end
+        it "should be sent to user email" do
+          @notify.header['to'].to_s.should ==@user.email
+        end
       end
-      it "should contain the reply's text in the mail" do
-        @notify.body.should have_selector("p",:content => @post.content)
-      end
-      it "should be sent to user email" do
-        @notify.header['to'].to_s.should ==@user.email
+
+      describe "plain text part" do
+
+        before(:each) do
+          @content = @notify.body.parts.find { |p| p.content_type.match /plain/ }.body
+        end
+        it "should contain user name" do
+          @content.should contain(@user.name)
+        end
+        it "should contain the post reply" do
+          @content.should contain(@post.content)
+        end
       end
       describe "should be delivered" do
 
