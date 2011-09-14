@@ -17,7 +17,9 @@ describe PostMailer do
       before(:each) do
         @mail = PostMailer.registration_confirmation(@user)
       end
-
+      it "should be sent to the user email" do
+        @mail.header['to'].to_s.should == @user.email
+      end
       it "should have the correct registration text" do
         @mail.body.should contain(/registration/)
       end
@@ -54,7 +56,9 @@ describe PostMailer do
       it "should contain the reply's text in the mail" do
         @notify.body.should have_selector("p",:content => @text)
       end
-
+      it "should be sent to user email" do
+        @notify.header['to'].to_s.should ==@user.email
+      end
       describe "should be delivered" do
 
         it "should deliver without error" do
