@@ -26,7 +26,7 @@ class MicropostsController < ApplicationController
   end
 
 private
-  
+
   def authorize_user
     @micropost = Micropost.find(params[:id])
     redirect_to root_path unless current_user?(@micropost.user)
@@ -35,7 +35,7 @@ private
   def notify_user(micropost)
     if !micropost.is_root?
       @reply_to = Micropost.find_by_id(micropost.parent_id).user
-      PostMailer.notify(@reply_to, micropost.content).deliver
+      PostMailer.notify(@reply_to, micropost).deliver
     end
   end
 

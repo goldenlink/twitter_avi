@@ -5,9 +5,10 @@ class PostMailer < ActionMailer::Base
     mail(:to => user.email, :subject => "Registration confirmation")
   end
 
-  def notify(user,text)
+  def notify(user,post)
     @user = user
-    @text = text
+    @text = post.content
+    @author_name = post.user.name
     mail(:to => user.email, :subject => "Reply to your post")
   end
 

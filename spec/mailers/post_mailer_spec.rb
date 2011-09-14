@@ -38,23 +38,27 @@ describe PostMailer do
 
   describe "Reply notification" do
     before(:each) do
-      @text = "Reply test text"
+      @post = @user.microposts.create(:content => "My post")
+      @reply = @user.microposts.create(:content => "My reply", :parent_id => @post)
     end
 
     it "should not raise an error" do
-      lambda { PostMailer.notify(@user, @text) }.should_not raise_error
+      lambda { PostMailer.notify(@user, @post) }.should_not raise_error
     end
 
     describe "Notification email" do
       before(:each) do
-        @notify = PostMailer.notify(@user, @text)
+        @notify = PostMailer.notify(@user, @post)
       end
 
       it "should have the user name" do
         @notify.body.should have_selector("h1",:content => "Welcome " + @user.name)
       end
+      it "should show the reply's author name" do
+        @notify.body.should have_selector("#answer_from", :content => @post.user.name)
+      end
       it "should contain the reply's text in the mail" do
-        @notify.body.should have_selector("p",:content => @text)
+        @notify.body.should have_selector("p",:content => @post.content)
       end
       it "should be sent to user email" do
         @notify.header['to'].to_s.should ==@user.email
