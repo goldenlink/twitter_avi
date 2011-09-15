@@ -6,3 +6,12 @@ The initial development is following the Ruby on Rails tutorial
 http://ruby.railstutorial.org/
 
 Then the project is developped following the twitter idea in order to increase my RoR level.
+
+= Completed
+
+- Ruby on Rails tutorial implementation completed with the exercices.
+- Added reply to messages.
+=> TODO : Add more Javascript to provide more dynamism on the site.
+- Added reply notification by email.
+- Password reset : added form to ask for forgotten paswword, it sends an email with the token and allows to provide a new password.
+=> TO BE TESTED more extensively.
