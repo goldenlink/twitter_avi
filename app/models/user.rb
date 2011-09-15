@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'digest'
 
 class User < ActiveRecord::Base
@@ -56,6 +57,18 @@ class User < ActiveRecord::Base
     relationships.find_by_followed_id(followed).destroy
   end
 
+  # Creates a reset random code to send by email. This uniquely identifies user to reset the password²
+  def create_reset_code
+    self.reset_code = Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by{ rand }.join)
+    save(:validate => false)
+  end
+
+  # Delete the reset code once the reset has been done.
+  def delete_reset_code
+    self.reset_code = nil
+    save(:validate => false)
+  end
+
   private
 
   def encrypt_password
@@ -79,6 +92,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -91,5 +105,6 @@ end
 #  encrypted_password :string(255)
 #  salt               :string(255)
 #  admin              :boolean(1)      default(FALSE)
+#  reset_code         :string(255)
 #
 

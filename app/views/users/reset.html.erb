@@ -1,0 +1,15 @@
+<%= form_for(@user, :reset_code => params[:reset_code],
+:as => :user, :url => { :action => :reset }, :method => :post) do |f| %>
+<div class="field">
+  <%= f.hidden_field :reset_code %>
+  <%= f.label :password %><br>
+  <%= f.password_field :password %>
+</div>
+<div class="field">
+  <%= f.label :password_confirmation %><br>
+  <%= f.password_field :password_confirmation %>
+</div>
+<div class="actions">
+  <%= f.submit "Change password" %>
+</div>
+<% end %>

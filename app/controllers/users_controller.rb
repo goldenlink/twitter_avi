@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  before_filter :authenticate, :except => [:show, :new, :create]
+  before_filter :authenticate, :except => [:show, :new, :create, :forgot, :reset]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user, :only => :destroy
   before_filter :redirect_signed_in, :only => [:new, :create]
@@ -15,13 +15,13 @@ class UsersController < ApplicationController
     @users = User.paginate(:page => params[:page])
   end
 
-  def show 
+  def show
     @user = User.find(params[:id])
     @microposts = @user.microposts.paginate(:page => params[:page])
     @title = @user.name
   end
 
-  def create 
+  def create
     @user = User.new(params[:user])
     if @user.save
       PostMailer.registration_confirmation(@user).deliver
@@ -59,19 +59,58 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
-  def following 
+  def following
     show_follow(:following)
   end
 
   def followers
     show_follow(:followers)
   end
-                      
+
   def show_follow(action)
     @title = action.to_s.capitalize
     @user = User.find(params[:id])
     @users = @user.send(action).paginate(:page => params[:page])
     render 'show_follow'
+  end
+
+  # To reset the password, user uses forgot link.
+  # it generates a reset code sent by email.
+  # in the email, the link to the reset form is sent.
+  def forgot
+    @title = "Forgot password"
+    @user = User.find_by_email(params[:user][:email]) unless params[:user].nil?
+    if request.post?
+
+      if @user
+        @user.create_reset_code
+        # send here reset email
+        PostMailer.reset_password(@user).deliver
+        flash[:notice] = "Reset code sent to #{@user.email}"
+      else
+        flash[:error] = "#{params[:email]} does not exist #{params[:user].inspect}"
+      end
+      redirect_to(root_path)
+    end
+  end
+
+  # Reset the password if the reset_code is found and delete it once the password has been
+  # submitted.
+  def reset
+    @user = User.find_by_reset_code(params[:user][:reset_code]) unless params[:user][:reset_code].nil?
+    if request.put?
+      if @user.update_attributes(:password => params[:user][:password],
+                                 :password_confirmation => params[:user][:password_confirmation])
+        @user.delete_reset_code
+        flash[:notice] = "Password reset successfully for #{@user.email}, #{params[:reset_code]}"
+        # Sign in user automatically after changin the password
+        sign_in @user
+        redirect_to(root_path)
+      else
+
+        render :action => :reset
+      end
+    end
   end
 
 private
@@ -80,15 +119,15 @@ private
     @user = User.find(params[:id])
     redirect_to(root_path) unless current_user?(@user)
   end
-   
+
   def admin_user
     redirect_to(root_path) unless current_user.admin?
   end
-   
+
   def redirect_signed_in
-    if signed_in? 
+    if signed_in?
       redirect_to(root_path)
     end
-  end  
-               
+  end
+
 end

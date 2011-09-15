@@ -3,8 +3,8 @@ require 'spec_helper'
 describe User do
 
   before(:each) do
-    @attr = { 
-      :name => "Example User", 
+    @attr = {
+      :name => "Example User",
       :email => "user@example.com",
       :password => "foobar",
       :password_confirmation => "foobar"
@@ -15,12 +15,12 @@ describe User do
     User.create!(@attr)
   end
 
-  it "should require a name" do 
+  it "should require a name" do
     no_name_user = User.new(@attr.merge(:name => ""))
     no_name_user.should_not be_valid
   end
 
-  it "should require an email address" do 
+  it "should require an email address" do
     no_email_user = User.new(@attr.merge(:email => ""))
     no_email_user.should_not be_valid
   end
@@ -78,7 +78,7 @@ describe User do
       User.new(hash).
         should_not be_valid
     end
-    
+
     it "should reject a too long password" do
       long = "a" * 41
       hash = @attr.merge(:password => long, :password_confirmation => long)
@@ -93,7 +93,7 @@ describe User do
     before(:each) do
       @user = User.create!(@attr)
     end
-    
+
     it "should have and encrypted password attribute" do
       @user.should respond_to(:encrypted_password)
     end
@@ -101,7 +101,7 @@ describe User do
     it "should set a encrypted password" do
       @user.encrypted_password.should_not be_blank
     end
-    
+
     describe "has_password? method" do
 
       it "should be true if the passwords match" do
@@ -113,9 +113,9 @@ describe User do
       end
 
     end
-    
+
     describe "authenticate method" do
-      
+
       it "should return nil on email/password mismatch" do
         wrong_password_user = User.authenticate(@attr[:email], "wrongpass")
         wrong_password_user.should be_nil
@@ -125,7 +125,7 @@ describe User do
         nonexistent_user = User.authenticate("bar@foo.com", @attr[:password])
         nonexistent_user.should be_nil
       end
-      
+
       it "should return the user on email/password match" do
         matching_user = User.authenticate(@attr[:email], @attr[:password])
         matching_user.should == @user
@@ -136,7 +136,7 @@ describe User do
   end
 
   describe "admin attribute" do
-    
+
     before(:each) do
       @user = User.create!(@attr)
     end
@@ -160,13 +160,13 @@ describe User do
     before(:each) do
       @user = User.create(@attr)
       @mp1 = Factory(:micropost, :user => @user, :created_at => 1.day.ago)
-      @mp2 = Factory(:micropost, :user => @user, :created_at => 1.hour.ago)      
+      @mp2 = Factory(:micropost, :user => @user, :created_at => 1.hour.ago)
     end
 
     it "should have a microposts attribute" do
       @user.should respond_to(:microposts)
     end
-      
+
     it "should have the right microposts in the right order" do
       @user.microposts.should == [@mp2, @mp1]
     end
@@ -180,7 +180,7 @@ describe User do
 
 
     describe "status feed" do
-      
+
       it "should have a feed" do
         @user.should respond_to(:feed)
       end
@@ -201,14 +201,14 @@ describe User do
         @user.follow!(followed)
         @user.feed.should include(mp3)
       end
-      
+
     end
-        
+
   end
 
   describe "relationships" do
 
-    before(:each) do 
+    before(:each) do
       @user = User.create!(@attr)
       @followed = Factory(:user)
     end
@@ -233,12 +233,12 @@ describe User do
       @user.follow!(@followed)
       @user.should be_following(@followed)
     end
-    
+
     it "should include the followed user in the following array" do
       @user.follow!(@followed)
       @user.following.should include(@followed)
     end
-    
+
     it "should have an unfollow! method" do
       @user.should respond_to(:unfollow!)
     end
@@ -263,8 +263,20 @@ describe User do
     end
   end
 
+  describe "reset code" do
+    before(:each) do
+      @user = Factory(:user)
+    end
 
+    it "should responds a reset code" do
+      @user.should respond_to(:create_reset_code)
+    end
+    it "should be able to delete a reset code" do
+      @user.should respond_to(:delete_reset_code)
+    end
+  end
 end
+
 
 
 
@@ -281,5 +293,6 @@ end
 #  encrypted_password :string(255)
 #  salt               :string(255)
 #  admin              :boolean(1)      default(FALSE)
+#  reset_code         :string(255)
 #
 
