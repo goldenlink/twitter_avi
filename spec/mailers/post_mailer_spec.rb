@@ -36,6 +36,64 @@ describe PostMailer do
     end
   end
 
+  describe "password forgotten reset" do
+
+    before(:each) do
+      @user.create_reset_code
+    end
+
+    it "should not raise an error" do
+      lambda { PostMailer.reset_password(@user) }.should_not raise_error
+    end
+    describe "forgotten password email" do
+      before(:each) do
+        @mail = PostMailer.reset_password(@user)
+      end
+
+      it "should be a multipart email" do
+        @mail.body.parts.length.should == 2
+        @mail.body.parts.collect(&:content_type).should == [ "text/plain; charset=UTF-8","text/html; charset=UTF-8"]
+      end
+
+      it "should send email to the user email" do
+        @mail.header['to'].to_s.should == @user.email
+      end
+
+      describe "html part" do
+        before(:each) do
+          @content = @mail.body.parts.find {|p| p.content_type.match /html/}.body
+        end
+
+        it "should include the url" do
+          @content.should contain(/http\:\/\/localhost\:3000\/reset\/?.*reset_code/)
+        end
+        it "should include the user name" do
+          @content.should contain(@user.name)
+        end
+      end
+
+      describe "text part" do
+        before(:each) do
+          @content = @mail.body.parts.find { |p| p.content_type.match /plain/}.body
+        end
+        it "should include the url" do
+          @content.should contain(/http\:\/\/localhost\:3000\/reset\/?.*reset_code/)
+        end
+        it "should include the user name" do
+          @content.should contain(@user.name)
+        end
+      end
+
+      describe "should be added to delivering queue" do
+        it "should deliver email successfully" do
+          lambda { @mail.deliver }.should
+          change(ActionMailer::Base.deliveries, :size).by(1)
+        end
+      end
+    end
+
+  end
+
   describe "Reply notification" do
     before(:each) do
       @post = @user.microposts.create(:content => "My post")

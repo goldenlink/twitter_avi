@@ -271,8 +271,27 @@ describe User do
     it "should responds a reset code" do
       @user.should respond_to(:create_reset_code)
     end
-    it "should be able to delete a reset code" do
-      @user.should respond_to(:delete_reset_code)
+    it "should generate a random reset code" do
+      @user.create_reset_code
+      @user.reset_code.should_not be_nil
+    end
+    it "should be a random code" do
+      code = @user.create_reset_code
+      @user.create_reset_code
+      @user.reset_code.should_not == code
+    end
+
+    describe "delete reset code" do
+      it "should be able to delete a reset code" do
+        @user.should respond_to(:delete_reset_code)
+      end
+
+      it "should delete the reset code" do
+        @user.create_reset_code
+        @user.reset_code.should_not be_nil
+        @user.delete_reset_code
+        @user.reset_code.should be_nil
+      end
     end
   end
 end
