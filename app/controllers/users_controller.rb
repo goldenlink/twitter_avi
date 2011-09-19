@@ -88,7 +88,7 @@ class UsersController < ApplicationController
         PostMailer.reset_password(@user).deliver
         flash[:notice] = "Reset code sent to #{@user.email}"
       else
-        flash[:error] = "#{params[:email]} does not exist #{params[:user].inspect}"
+        flash[:error] = "#{params[:email]} does not exist"
       end
       redirect_to(root_path)
     end
@@ -97,12 +97,13 @@ class UsersController < ApplicationController
   # Reset the password if the reset_code is found and delete it once the password has been
   # submitted.
   def reset
+    @title = "Reset your password"
     @user = User.find_by_reset_code(params[:user][:reset_code]) unless params[:user][:reset_code].nil?
     if request.put?
       if @user.update_attributes(:password => params[:user][:password],
                                  :password_confirmation => params[:user][:password_confirmation])
         @user.delete_reset_code
-        flash[:notice] = "Password reset successfully for #{@user.email}, #{params[:reset_code]}"
+        flash[:notice] = "Password reset successfully for #{@user.email}"
         # Sign in user automatically after changin the password
         sign_in @user
         redirect_to(root_path)

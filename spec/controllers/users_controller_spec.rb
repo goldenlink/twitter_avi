@@ -51,7 +51,7 @@ describe UsersController do
         response.should have_selector("a", :href => "/users?page=2", :content => "Next")
       end
     end
-   
+
 
   end
 
@@ -70,7 +70,7 @@ describe UsersController do
       get :new
       response.should have_selector("input[name='user[name]'][type='text']")
     end
-    
+
     it "should have an email field" do
       get :new
       response.should have_selector("input[name='user[email]'][type='text']")
@@ -87,14 +87,14 @@ describe UsersController do
     end
 
     describe "signed in user" do
-      
+
       before(:each) do
         @user = Factory(:user)
         test_sign_in(@user)
       end
 
       it "should be redirected to root url" do
-        get :new 
+        get :new
         response.should redirect_to(root_path)
       end
 
@@ -103,7 +103,7 @@ describe UsersController do
   end
 
   describe "GET 'show'" do
-    
+
     before(:each) do
       @user = Factory(:user)
     end
@@ -154,7 +154,7 @@ describe UsersController do
 
     describe "success" do
       before(:each) do
-        @attr = { :name =>  "New User", :email => "user1@example.com", 
+        @attr = { :name =>  "New User", :email => "user1@example.com",
           :password => "foobar", :password_confirmation => "foobar" }
       end
 
@@ -180,9 +180,9 @@ describe UsersController do
       end
 
     end
-    
+
     describe "failure" do
-      
+
       before(:each) do
         @attr = { :name => "", :email => "", :password => "testit",
           :password_confirmation => "testit" }
@@ -206,11 +206,11 @@ describe UsersController do
     end
 
     describe "signed in user" do
-      
+
       before(:each) do
         @user = Factory(:user)
         test_sign_in(@user)
-        @attr = { :name =>  "New User", :email => "user1@example.com", 
+        @attr = { :name =>  "New User", :email => "user1@example.com",
           :password => "foobar", :password_confirmation => "foobar" }
       end
 
@@ -224,7 +224,7 @@ describe UsersController do
 
   describe "GET 'edit'" do
 
-    before(:each) do 
+    before(:each) do
       @user = Factory(:user)
       test_sign_in(@user)
     end
@@ -249,7 +249,7 @@ describe UsersController do
   end
 
   describe "PUT 'edit" do
-    
+
     before(:each) do
       @user = Factory(:user)
       test_sign_in(@user)
@@ -276,7 +276,7 @@ describe UsersController do
     describe "success" do
 
       before(:each) do
-        @attr = { :name => "New name", :email => "user@example.com", 
+        @attr = { :name => "New name", :email => "user@example.com",
           :password => "bababa", :password_confirmation => "bababa" }
       end
 
@@ -296,12 +296,12 @@ describe UsersController do
         put :update, :id => @user, :user => @attr
         flash[:success].should =~ /updated/i
       end
-      
+
     end
   end
 
   describe "authentication of edit/update pages" do
-    
+
     before(:each) do
       @user = Factory(:user)
     end
@@ -340,7 +340,7 @@ describe UsersController do
   end
 
   describe "DELETE 'destroy'" do
-    
+
     before(:each) do
       @user = Factory(:user)
     end
@@ -361,7 +361,7 @@ describe UsersController do
     end
 
     describe "as an admin user" do
-      
+
       before(:each) do
         @admin = Factory(:user, :email => "admin@example.com", :admin => true)
         test_sign_in(@admin)
@@ -390,7 +390,7 @@ describe UsersController do
   describe "follow pages" do
 
     describe "when not signed in" do
-      
+
       it "should protect 'following'" do
         get :following, :id => 1
         response.should redirect_to(signin_path)
@@ -428,6 +428,52 @@ describe UsersController do
         response.should have_selector("a", :href => followers_user_path(@user),
                                       :content => "0 follower")
       end
+    end
+  end
+
+  describe "forgot" do
+    before(:each) do
+      @user = Factory(:user)
+      @user.create_reset_code
+    end
+
+    describe "GET forgot" do
+
+      it "should have forgot form" do
+        get :forgot
+        response.should have_selector("title", :content => "Forgot password")
+      end
+
+      it "should send an email" do
+        post :forgot, :user => { :email => @user.email }
+        flash[:notice].should contain(@user.email.to_s)
+        response.should redirect_to(root_path)
+      end
+
+    end
+
+    describe "GET Reset" do
+
+      it "should show the reset password form" do
+        get :reset, :user => { :reset_code => @user.reset_code }
+        response.should have_selector("title", :content => "Reset your password")
+      end
+
+      it "should reset password" do
+        pass = "foobar"
+        put :reset, :user => { :reset_code => @user.reset_code, :password => pass,
+          :password_confirmation => pass}
+        flash[:notice].should contain("Password reset successfully for #{@user.email}")
+        response.should redirect_to(root_path)
+      end
+
+      it "should resend for new password" do
+        put :reset, :user => { :reset_code => @user.reset_code, :password => "password",
+          :password_confirmation => "other_pass"}
+        response.should render_template('users/reset')
+
+      end
+
     end
   end
 end
