@@ -8,8 +8,10 @@ gem 'rails', '3.0.9'
 gem 'mysql2', '~> 0.2.6'
 gem 'gravatar_image_tag', '0.1.0'
 gem 'will_paginate', '3.0.pre2'
-gem 'ancestry' 
+gem 'ancestry'
 gem 'jquery-rails', '>= 0.2.6'
+gem 'aasm'
+gem 'enum_column3'
 
 # Testing framework RSpec
 group :development do

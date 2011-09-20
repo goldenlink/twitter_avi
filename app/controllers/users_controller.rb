@@ -83,7 +83,7 @@ class UsersController < ApplicationController
     if request.post?
 
       if @user
-        @user.create_reset_code
+        @user.suspend
         # send here reset email
         PostMailer.reset_password(@user).deliver
         flash[:notice] = "Reset code sent to #{@user.email}"
@@ -102,7 +102,7 @@ class UsersController < ApplicationController
     if request.put?
       if @user.update_attributes(:password => params[:user][:password],
                                  :password_confirmation => params[:user][:password_confirmation])
-        @user.delete_reset_code
+        @user.activate
         flash[:notice] = "Password reset successfully for #{@user.email}"
         # Sign in user automatically after changin the password
         sign_in @user

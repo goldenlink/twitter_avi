@@ -2,9 +2,31 @@
 require 'digest'
 
 class User < ActiveRecord::Base
+  ##################################
+  ## STATE MACHINE
+  ##################################
+  include AASM
+  aasm_column :status
+  aasm_initial_state :inactive
+  aasm_state :inactive
+  aasm_state :active
+  aasm_state :suspended
+
+  aasm_event :activate, :after => :delete_reset_code do
+    transitions :to => :active, :from => [:inactive, :suspended, :active]
+  end
+  aasm_event :suspend, :before => :create_reset_code do
+    transitions :to => :suspended, :from => [:active, :inactive, :suspended]
+  end
+  ##################################
+  ## ACCESSORS
+  ##################################
   attr_accessor :password
   attr_accessible :name, :email, :password, :password_confirmation
 
+  ##################################
+  ## MODEL
+  ##################################
   has_many :microposts, :dependent => :destroy
   has_many :relationships, :foreign_key => "follower_id", :dependent => :destroy
   has_many :following, :through => :relationships, :source => :followed
@@ -12,6 +34,9 @@ class User < ActiveRecord::Base
   :dependent => :destroy
   has_many :followers, :through => :reverse_relationships, :source => :follower
 
+  #####################################
+  ## VALIDATORS
+  #####################################
   email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   validates :name,      :presence     => true,
@@ -22,8 +47,12 @@ class User < ActiveRecord::Base
   validates :password,  :presence     => true,
                         :confirmation => true,
                         :length       => { :within => 6..40 }
-
+  # Status :limit => [:inactive, :active, :suspended] used for the state machine
+  validates_columns :status
   before_save :encrypt_password
+
+  # A callback after object initialization to set up the reset code for activation
+  after_create   { self.create_reset_code }
 
   # Return true if the user's password matches witht he submitted password
   def has_password?(submitted_password)
@@ -91,8 +120,6 @@ class User < ActiveRecord::Base
 end
 
 
-
-
 # == Schema Information
 #
 # Table name: users
@@ -106,5 +133,6 @@ end
 #  salt               :string(255)
 #  admin              :boolean(1)      default(FALSE)
 #  reset_code         :string(255)
+#  status             :enum([:inactive
 #
 

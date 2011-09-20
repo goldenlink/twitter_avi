@@ -294,7 +294,61 @@ describe User do
       end
     end
   end
+
+
+  describe "state machine" do
+    before(:each) do
+      @user = Factory(:user)
+    end
+
+    describe "after intialize" do
+      it "should responds to after intialize method" do
+        User.should respond_to(:after_create)
+      end
+
+      it "should have a reset code after initialization" do
+        @user.reset_code.should_not be_nil
+      end
+    end
+
+    describe "model" do
+      it "should have status attribute" do
+        @user.should respond_to(:status)
+      end
+      it "should have the correct states" do
+        states = @user.column_for_attribute(:status).limit
+        states.size.should == 3
+        states.should include(:inactive)
+        states.should include(:active)
+        states.should include(:suspended)
+      end
+      it "should have the correct default state" do
+        @user.status.should == :inactive
+      end
+
+      describe "transitions" do
+        it "should activate user" do
+          @user.status.should == :inactive
+          @user.activate
+          @user.status.should == :active
+        end
+        it "should suspend user" do
+          @user.activate
+          @user.suspend
+          @user.status.should == :suspended
+        end
+        it "should activate user from suspended state" do
+          @user.activate
+          @user.suspend
+          @user.activate
+          @user.status.should == :active
+        end
+      end
+    end
+  end
+
 end
+
 
 
 
@@ -313,5 +367,6 @@ end
 #  salt               :string(255)
 #  admin              :boolean(1)      default(FALSE)
 #  reset_code         :string(255)
+#  status             :enum([:inactive
 #
 
