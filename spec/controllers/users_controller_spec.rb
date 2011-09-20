@@ -431,6 +431,20 @@ describe UsersController do
     end
   end
 
+  describe "activate_user" do
+    before(:each) do
+      @user = Factory(:user)
+    end
+
+    it "should activate user" do
+      get :activate_user, :user => { :reset_code => @user.reset_code }
+      flash[:notice].should contain("activated")
+      response.should redirect_to(root_path)
+
+    end
+
+  end
+
   describe "forgot" do
     before(:each) do
       @user = Factory(:user)

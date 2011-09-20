@@ -26,6 +26,7 @@ SampleApp::Application.routes.draw do
   # Password reminder resources
   match '/forgot', :to  => 'users#forgot'
   match '/reset', :to => 'users#reset'
+  match '/activate', :to => 'users#activate_user'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

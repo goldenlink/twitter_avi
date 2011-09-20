@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  before_filter :authenticate, :except => [:show, :new, :create, :forgot, :reset]
+  before_filter :authenticate, :except => [:show, :new, :create, :forgot, :reset, :activate_user]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user, :only => :destroy
   before_filter :redirect_signed_in, :only => [:new, :create]
@@ -37,12 +37,10 @@ class UsersController < ApplicationController
   end
 
   def edit
-#    @user = User.find(params[:id]) defined in filter
     @title = "Edit user"
   end
 
   def update
-#    @user = User.find(params[:id]) defined in filter1
     if @user.update_attributes(params[:user])
       flash[:success] = "Profile updated."
       redirect_to @user
@@ -84,7 +82,6 @@ class UsersController < ApplicationController
 
       if @user
         @user.suspend
-        # send here reset email
         PostMailer.reset_password(@user).deliver
         flash[:notice] = "Reset code sent to #{@user.email}"
       else
@@ -112,6 +109,17 @@ class UsersController < ApplicationController
         render :action => :reset
       end
     end
+  end
+
+  # After user creation, the user has to be activated (have to follow the link in an email)
+  def activate_user
+    @user = User.find_by_reset_code(params[:user][:reset_code]) unless params[:user][:reset_code].nil?
+    if @user
+      @user.activate
+      flash[:notice] = "User #{@user.email} sucessfully activated"
+      sign_in @user
+    end
+    redirect_to(root_path)
   end
 
 private

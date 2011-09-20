@@ -3,6 +3,8 @@ class PostMailer < ActionMailer::Base
 
   # Sends an email to thank for registration
   def registration_confirmation(user)
+    @user = user
+    @url = activate_url(:user => { :reset_code => @user.reset_code })
     mail(:to => user.email, :subject => "Registration confirmation")
   end
 
