@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'digest'
+# require 'aasm'
+
 
 class User < ActiveRecord::Base
   ##################################

@@ -62,7 +62,7 @@ describe "Users" do
           fill_in "Password", :with => "foobar"
           fill_in "Confirmation", :with => "foobar"
           click_button
-          response.should render_template('users/show')
+          response.should render_template('pages/home')
           response.should have_selector("div.flash.success",
                                         :content => "Welcome")
         end.should change(User, :count).by(1)

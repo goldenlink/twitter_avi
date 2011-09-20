@@ -25,9 +25,8 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     if @user.save
       PostMailer.registration_confirmation(@user).deliver
-      sign_in @user
-      flash[:success] = "Welcome to the Sample App!"
-      redirect_to @user
+      flash[:success] = "Welcome to the Sample App! Don't forget to activate your account"
+      redirect_to root_path
     else
       @title = "Sign up"
       #Reset passwords fields after failure
