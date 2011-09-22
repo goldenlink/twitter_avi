@@ -1,5 +1,7 @@
 
       <strong>Name</strong> <%= @user.name %><br>
-      <strong>URL</strong> <%= link_to user_path(@user), @user %><br>
+      <strong>URL</strong> <%= link_to user_path(@user), @user %>
+      <div class="rss"><%= link_to image_tag("feedicons-standard/feed-icon-14x14.png"), url_for(:controller => :users, :action => :show, :format => 'rss') %></div>
+      <br>
       <strong>Microposts</strong> <%= @user.microposts.count %>
       <%= render 'shared/stats' %>
