@@ -5,3 +5,6 @@ tmp/
 *#
 *~
 *.log
+*.lock
+.#*
+coverage/
