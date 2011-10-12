@@ -30,6 +30,8 @@ end
 
 group :test, :development do
   gem "rspec-rails", "~> 2.6"
+  gem "test-unit"
+  gem "ci_reporter"
 end
 
 # Use unicorn as the web server
